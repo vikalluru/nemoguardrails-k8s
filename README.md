@@ -1,6 +1,4 @@
-Here’s a README guide for deploying NeMo Guardrails on Azure Kubernetes Service (AKS) with GPU support:
-
-Deploying NeMo Guardrails on Azure Kubernetes Service (AKS)
+## Deploying NeMo Guardrails on Azure Kubernetes Service (AKS)
 
 This guide walks you through deploying NeMo Guardrails on AKS using a GPU-enabled node pool.
 
