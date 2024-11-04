@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "nemoguardrails.fullname" . }}-test-chat-completions"
+  labels:
+    {{- include "nemoguardrails.labels" . | nindent 4 }}
+    sidecar.istio.io/inject: "false"
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: curl
+      image: curlimages/curl:8.6.0
+      command: ['curl']
+      args:
+        - -X
+        - "POST"
+        - 'http://{{ .Values.service.name | default (include "nemoguardrails.fullname" .) }}:{{ .Values.service.openai_port | default "80" }}/v1/chat/completions'
+        - -H
+        - 'accept: application/json'
+        - -H
+        - 'Content-Type: application/json'
+        - -f
+        - -d
+        - |
+            {
+              "config_id": "default",
+              "config_ids": [
+                "string"
+              ],
+              "thread_id": "stringstringstri",
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "Hello, how can I assist you today?"
+                }
+              ],
+              "context": {},
+              "stream": false,
+              "options": {
+                "rails": {
+                  "input": true,
+                  "output": true,
+                  "retrieval": true,
+                  "dialog": true
+                },
+                "llm_params": {},
+                "llm_output": false,
+                "output_vars": true,
+                "log": {
+                  "activated_rails": false,
+                  "llm_calls": false,
+                  "internal_events": false,
+                  "colang_history": false
+                }
+              },
+              "state": {}
+            }
+  restartPolicy: Never
+  

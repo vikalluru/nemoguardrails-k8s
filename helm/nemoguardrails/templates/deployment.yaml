@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nemoguardrails.fullname" . }}
+  labels:
+    app: {{ include "nemoguardrails.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "nemoguardrails.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "nemoguardrails.name" . }}
+    spec:
+      containers:
+        - name: nemoguardrails
+          image: "{{ .Values.image.repository }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: OPENAI_API_KEY
+              value: {{ .Values.env.OPENAI_API_KEY | quote }}
+          command: ["nemoguardrails", "server", "--port", "{{ .Values.service.port }}"]
+          volumeMounts:
+            {{- if .Values.configMount.enabled }}
+            - name: config-folder
+              mountPath: {{ .Values.configMount.mountPath }}
+            {{- end }}
+
+      volumes:
+        {{- if .Values.configMount.enabled }}
+        - name: config-folder
+          configMap:
+            name: config-folder
+        {{- end }}

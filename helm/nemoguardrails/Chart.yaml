@@ -1,0 +1,6 @@
+apiVersion: v2
+name: nemoguardrails
+description: A Helm chart to deploy the NeMo Guardrails container
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

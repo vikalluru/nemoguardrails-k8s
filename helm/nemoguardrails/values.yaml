@@ -1,0 +1,30 @@
+## @section Deployment parameters
+
+## @param env [array] Adds arbitrary environment variables to the main container
+env:
+  OPENAI_API_KEY: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # Set this before deployment
+
+
+configMount:
+  enabled: true  # Set to false if you don't want to mount an external folder
+  hostPath: "<path-to-config-folder>"  # Use the full path here
+  mountPath: "/config"
+
+## @param image.repository [string] NIM-LLM Image Repository
+## @param image.tag [string] Image tag or version
+## @param image.pullPolicy [string] Image pull policy
+image:
+  repository: <nemoguardrails-docker-image>
+  pullPolicy: IfNotPresent
+
+## @param replicaCount Specify static replica count for deployment.
+replicaCount: 1
+
+## @section Service parameters
+## @param service.type Specifies the service type for the deployment.
+## @param service.name Overrides the default service name
+## @param service.port Specifies Port for the service.
+service:
+  type: LoadBalancer
+  port: 8000                      # External port for the service
+  targetPort: 8000                # Container port
