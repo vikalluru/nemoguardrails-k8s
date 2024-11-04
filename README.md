@@ -43,7 +43,7 @@ az aks create --resource-group vikalluru-nim-demo --name nim-demo
 
 ### 4. Add a GPU Node Pool
 
-Add a GPU-enabled node pool to your AKS cluster. Replace placeholders with your desired values.
+Add a GPU-enabled node pool to your AKS cluster. Replace placeholders with your desired values. You need only 1 CPU instance to deploy nemoguardrails. However, in this example we used one NC series A100 instance instead.
 
 ```bash
 az aks nodepool add --resource-group <resource group name> --cluster-name <aks cluster name> --name <nodepool name> --node-count 1 --skip-gpu-driver-install --node-vm-size <desired VM type> --node-osdisk-size 2048 --max-pods 110
