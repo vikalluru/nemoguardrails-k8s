@@ -182,4 +182,4 @@ service/nemoguardrails-nemoguardrails   LoadBalancer   10.0.164.27   108.142.102
 
 Ping the Guardrails Chat UI by navigating to the external IP and port (e.g., `http://108.142.102.89:8000`). You should see a UI similar to the screenshot below:
 
-![Guardrails Chat UI](images/guardrails-chat-ui.png)
+![Guardrails Chat UI](ui.png)
