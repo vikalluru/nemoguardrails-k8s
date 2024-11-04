@@ -12,6 +12,55 @@ This guide walks you through deploying NeMo Guardrails on AKS using a GPU-enable
 
 ## Steps
 
+### Configuring the `values.yaml` File
+
+Before deploying the Helm chart for NeMo Guardrails, ensure you fill in the necessary values in the `values.yaml` file.
+
+Here is a sample `values.yaml` file with descriptions of each parameter:
+
+```yaml
+## @section Deployment parameters
+
+## @param env [array] Adds arbitrary environment variables to the main container
+env:
+  OPENAI_API_KEY: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # Set this to your OpenAI API Key before deployment
+
+configMount:
+  enabled: true  # Set to false if you don't want to mount an external folder
+  hostPath: "<path-to-config-folder>"  # Use the full path to your configuration folder here
+  mountPath: "/config"
+
+## @param image.repository [string] NIM-LLM Image Repository
+## @param image.tag [string] Image tag or version
+## @param image.pullPolicy [string] Image pull policy
+image:
+  repository: <nemoguardrails-docker-image>  # Replace with the Docker image URL for NeMo Guardrails
+  pullPolicy: IfNotPresent
+
+## @param replicaCount Specify static replica count for deployment.
+replicaCount: 1
+
+## @section Service parameters
+## @param service.type Specifies the service type for the deployment.
+## @param service.name Overrides the default service name
+## @param service.port Specifies the port for the service.
+service:
+  type: LoadBalancer
+  port: 8000                      # External port for the service
+  targetPort: 8000                # Container port
+```
+
+### Explanation of Key Parameters
+
+- **env.OPENAI_API_KEY**: Set this to your OpenAI API key before deploying. This key will allow the application to communicate with OpenAI's API.
+- **configMount**: Enable or disable mounting an external configuration folder. Set `hostPath` to the absolute path where your configuration files are located.
+- **image.repository**: Provide the repository URL for the NeMo Guardrails Docker image.
+- **replicaCount**: Set the number of replicas for the deployment.
+- **service.type**: Specify the service type (`LoadBalancer`, `ClusterIP`, etc.). `LoadBalancer` is recommended for external access.
+- **service.port**: Configure the external and internal port for the NeMo Guardrails service.
+
+Ensure you complete these fields as necessary in `values.yaml` before deploying NeMo Guardrails with Helm.
+
 ### 1. Clone NeMo Guardrails Repository
 
 Clone the official NeMo Guardrails repository to get access to the source code:
@@ -43,7 +92,7 @@ az aks create --resource-group vikalluru-nim-demo --name nim-demo
 
 ### 4. Add a GPU Node Pool
 
-Add a GPU-enabled node pool to your AKS cluster. Replace placeholders with your desired values. You need only 1 CPU instance to deploy nemoguardrails. However, in this example we used one NC series A100 instance instead.
+Add a GPU-enabled node pool to your AKS cluster. Replace placeholders with your desired values.
 
 ```bash
 az aks nodepool add --resource-group <resource group name> --cluster-name <aks cluster name> --name <nodepool name> --node-count 1 --skip-gpu-driver-install --node-vm-size <desired VM type> --node-osdisk-size 2048 --max-pods 110
@@ -133,4 +182,4 @@ service/nemoguardrails-nemoguardrails   LoadBalancer   10.0.164.27   108.142.102
 
 Ping the Guardrails Chat UI by navigating to the external IP and port (e.g., `http://108.142.102.89:8000`). You should see a UI similar to the screenshot below:
 
-![Guardrails Chat UI](ui.png)
+![Guardrails Chat UI](images/guardrails-chat-ui.png)
